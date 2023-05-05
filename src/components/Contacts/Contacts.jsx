@@ -1,16 +1,17 @@
 import React from 'react';
 import css from './Contacts.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from '../../redux/contacts/slice';
+import { useSelector } from 'react-redux';
+import { useDeleteContactMutation, useFetchContactsQuery } from 'redux/contacts/contactsApi';
 
 export default function ContactList() {
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
-  const dispatch = useDispatch();
+  const { data: contacts = [] } = useFetchContactsQuery();
 
-  const handleDeleteContact = contactId => {
-    dispatch(deleteContact(contactId));
-  };
+  console.log('contacts', contacts);
+
+  const [func] = useDeleteContactMutation()
+
+  const filter = useSelector(state => state.filter);
+
 
   const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase();
@@ -21,23 +22,25 @@ export default function ContactList() {
 
   const visibleContacts = getVisibleContacts();
   return (
-    <ol className={css.ContactList}>
-      {visibleContacts.map(({ id, name, number }) => {
-        return (
-          <li className={css.ContactList_item} key={id}>
-            <p>
-              {name}: {number}
-            </p>
-            <button
-              className={css.ContactList_btn}
-              onClick={() => handleDeleteContact(id)}
-              type="button"
-            >
-              Delete
-            </button>
-          </li>
-        );
-      })}
-    </ol>
+    <>
+      <ol className={css.ContactList}>
+        {visibleContacts.map(({ id, name, number }) => {
+          return (
+            <li className={css.ContactList_item} key={id}>
+              <p>
+                {name}: {number}
+              </p>
+              <button
+                className={css.ContactList_btn}
+                onClick={() => func(id)}
+                type="button"
+              >
+                Delete
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </>
   );
 }
