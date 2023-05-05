@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { nanoid } from 'nanoid';
-import { useDispatch, useSelector } from 'react-redux';
-// import { addContact } from '../../redux/contacts/slice';
-
 import css from './Form.module.css';
+import {
+  useAddContactMutation,
+  useFetchContactsQuery,
+} from 'redux/contacts/contactsApi';
 
 function Form() {
+  const [addContact] = useAddContactMutation();
+  const { data: contacts = [] } = useFetchContactsQuery();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const contacts = useSelector(state => state.contacts);
-  const dispatch = useDispatch();
+  // const contacts = useSelector(state => state.contacts);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -20,13 +21,12 @@ function Form() {
       alert(`${name} is already in contact`);
       return;
     } else {
-      const contact = {
+      const newContact = {
         name,
         number,
-        id: nanoid(),
       };
-      // dispatch(addContact(contact));
-      // reset();
+      addContact(newContact);
+      reset();
     }
   };
 
@@ -40,12 +40,9 @@ function Form() {
     setNumber('');
   };
 
-  const nameId = nanoid();
-  const telId = nanoid();
-
   return (
     <form onSubmit={handleSubmit} className={css.formSection}>
-      <label htmlFor={nameId}>
+      <label>
         Name{' '}
         <input
           type="text"
@@ -55,11 +52,10 @@ function Form() {
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
-          id={nameId}
           className={css.input}
         />
       </label>
-      <label htmlFor={telId}>
+      <label>
         Number{' '}
         <input
           type="tel"
@@ -69,7 +65,6 @@ function Form() {
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
-          id={telId}
           className={css.input}
         />
       </label>
