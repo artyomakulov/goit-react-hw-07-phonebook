@@ -24,8 +24,13 @@ export const contactsApi = createApi({
         method: 'post',
         body: newContact,
       }),
+      invalidatesTags: ['Contacts'],
     }),
   }),
 });
 
-export const { useFetchContactsQuery, useDeleteContactMutation, useAddContactMutation } = contactsApi;
+export const {
+  useFetchContactsQuery,
+  useDeleteContactMutation,
+  useAddContactMutation,
+} = contactsApi;

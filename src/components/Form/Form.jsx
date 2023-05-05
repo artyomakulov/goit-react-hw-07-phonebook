@@ -10,7 +10,6 @@ function Form() {
   const { data: contacts = [] } = useFetchContactsQuery();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  // const contacts = useSelector(state => state.contacts);
 
   const handleSubmit = e => {
     e.preventDefault();
